@@ -6,6 +6,8 @@ const helmet=require('helmet')
 // import routes from './routes
 //later use barrel fetch
 const taskRouter=require('./routes/taskRouter')
+// import the db connection
+const connectDB=require('./db/connectdb');
 require('dotenv').config()
 
 
@@ -22,13 +24,13 @@ app.use(cors(
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:false}))
 app.use(bodyParser.json())
-
+// app.use(express.json())
 // routes
 app.get('/',(req,res)=>{
     res.send('Hello World from task manager');
 });
 
-app.use('/api/v1/task', taskRouter);
+app.use('/api/v1/tasks', taskRouter);
 
 // catch the router not found error a
 app.use((req,res,next)=>{
@@ -39,6 +41,22 @@ app.use((req,res,next)=>{
 })
 
 const port=process.env.PORT||5000   
-app.listen(port,()=>{
-    console.log(`Server is running on port ${port}`)
-})
+
+// wrap the db connection with the PORT connection in a start function
+const start=async()=>{
+    try{
+        const db=await connectDB(process.env.MONGO_URI)
+        if(!db){
+            console.log('DB Connection not established');
+            return
+        }
+        app.listen(port,()=>{
+            console.log(`Server is running on port ${port}`)
+        })
+    }catch(e){
+        console.log(error)
+    }
+}
+
+start();
+

@@ -1,21 +1,14 @@
 const express=require('express');
-
+const taskController= require('../controllers/taskController')
 const router=express.Router()
 
-router.get('/',(req,res)=>{
-    res.send('GET handlers')
-});
+router.get('/',taskController.getAlltasks);
 
-router.post('/',(req,res)=>{
-    res.send('POST handlers')
-});
+router.get('/:id',taskController.getTask);
+router.post('/',taskController.createTask);
 
-router.put('/',(req,res)=>{
-    res.send('PUT handlers')
-});
+router.patch('/:id',taskController.updateTask);
 
-router.delete('/',(req,res)=>{
-    res.send('DELETE handlers')
-});
+router.delete('/:id',taskController.deleteTask);
 
 module.exports=router;
