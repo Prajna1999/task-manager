@@ -10,16 +10,22 @@ const taskRouter=require('./routes/taskRouter')
 const connectDB=require('./db/connectdb');
 require('dotenv').config()
 
+const notFound = require('./middlewares/not-found')
+const errorHandler = require('./middlewares/error-handler');
+
+
+// serve the static files
+
 
 const app=express()
-app.use(helmet());
+// app.use(helmet());
 app.use(cors(
     {
         methods:"GET, POST, PUT, DELETE, HEAD, OPTIONS",
        
     }
 ))
-
+app.use(express.static('./public'))
 // middlewares
 app.use(morgan('dev'));
 app.use(bodyParser.urlencoded({extended:false}))
@@ -31,6 +37,10 @@ app.get('/',(req,res)=>{
 });
 
 app.use('/api/v1/tasks', taskRouter);
+
+// error handlers
+app.use(notFound);
+app.use(errorHandler);
 
 // catch the router not found error a
 app.use((req,res,next)=>{
